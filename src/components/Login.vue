@@ -4,13 +4,13 @@
       <div>
         <h1>Join Chatroom</h1>
         <div>
-          <input placeholder="Username" />
+          <input v-model="username" type="text" placeholder="Username" />
         </div>
         <div>
-          <input placeholder="RoomID" />
+          <input v-model="roomId" type="text" placeholder="RoomID" />
         </div>
       </div>
-      <button>JOIN</button>
+      <button @click="join">JOIN</button>
     </div>
   </div>
 </template>
@@ -18,6 +18,51 @@
 <script>
 export default {
   name: "Login",
+  data() {
+    return {
+      username: "",
+      roomId: "",
+    };
+  },
+  sockets: {
+    validated(validated) {
+      if (validated) {
+        this.$emit("join", this.username, this.roomId);
+        this.$socket.emit("joinRoom", {
+          username: this.username,
+          roomId: this.roomId,
+        });
+      } else {
+        this.$toast.open({
+          message: "username already use it in this room",
+          type: "error",
+          position: "top",
+          duration: 10000,
+          dismissible: true,
+          queue: true,
+        });
+      }
+    },
+  },
+  methods: {
+    join() {
+      if(this.username !== '' && this.roomId !== ''){
+        this.$socket.emit("validation", {
+          username: this.username,
+          roomId: this.roomId,
+        });
+      }else{
+         this.$toast.open({
+          message: "username and roomId cannot be empty",
+          type: "error",
+          position: "top",
+          duration: 10000,
+          dismissible: true,
+          queue: true,
+        });
+      }
+    },
+  },
 };
 </script>
 

@@ -2,32 +2,46 @@
   <div class="container">
     <div class="header-wrapper">
       <div class="side">
-        <h4>Exit</h4>
+        <h4 @click="exit">Exit</h4>
       </div>
-      <h1>Chatroom</h1>
+      <h1>{{ roomId }}</h1>
       <div class="side" />
     </div>
-    <div class="chat-wrapper">
-      <span>Nama</span>
-      <div class="talk-bubble-left tri-left btm-left">
-        <div class="talktext">
+    <div ref="chatWrapper" class="chat-wrapper">
+      <div v-for="(msg, index) in messages" :key="index">
+        <div v-if="msg.username === 'ChatroomBot'" class="chat-bot">
           <p>
-            Flush to the bottom right. Uses .btm-right only hi
-            fadfasdfasdfasfdadfasdfsadf
+            {{ msg.text }}
           </p>
         </div>
-      </div>
-
-      <div class="talk-bubble-right tri-right btm-right">
-        <div class="talktext">
-          <p>Flush </p>
+        <div v-else-if="msg.username !== username" class="chat-left">
+          <span>{{ msg.username }}</span>
+          <div class="talk-bubble-left tri-left btm-left">
+            <div class="talktext">
+              <p>
+                {{ msg.text }}
+              </p>
+            </div>
+          </div>
         </div>
-      </div>   
+        <div v-else class="chat-right">
+          <div class="talk-bubble-right tri-right btm-right">
+            <div class="talktext">
+              <p>{{ msg.text }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="message-wrapper">
-      <input type="text" placeholder="Message here..." />
-      <button>
+      <input
+        ref="messageBox"
+        v-model="message"
+        type="text"
+        placeholder="Message here..."
+      />
+      <button @click="chatMessage">
         <fa :icon="['fas', 'arrow-up']" size="sm" />
       </button>
     </div>
@@ -37,6 +51,36 @@
 <script>
 export default {
   name: "Chatroom",
+  props: ["username", "roomId"],
+  data() {
+    return {
+      message: "",
+      messages: [],
+    };
+  },
+  sockets: {
+    connect() {
+      console.log("new connection");
+    },
+    message(msg) {
+      this.messages.push(msg);
+      this.$nextTick(() => {
+        const el = this.$refs.chatWrapper;
+        el.scrollTop = el.scrollHeight;
+        this.$refs.messageBox.focus();
+      });
+    },
+  },
+  methods: {
+    chatMessage() {
+      this.$socket.emit("chatMessage", this.message);
+      this.message = "";
+    },
+    exit() {
+      this.$socket.emit("exitRoom");
+      this.$emit("exit");
+    },
+  },
 };
 </script>
 
@@ -70,6 +114,10 @@ h4 {
   font-size: clamp(1rem, 2.5vw, 1.2rem);
 }
 
+h4:hover {
+  cursor: pointer;
+}
+
 h1 {
   font-weight: 600;
   flex-grow: 2;
@@ -81,11 +129,35 @@ h1 {
   flex-direction: column;
   justify-content: flex-start;
   flex-grow: 1;
-  overflow:auto;
+  overflow: auto;
 }
 .chat-wrapper span {
   font-size: 12px;
   margin-left: 5px;
+}
+
+.chat-bot{
+  margin-top: 5px;
+  font-size: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+.chat-bot p{
+  background-color: #bdbdbd;
+  padding: 8px;
+  border-radius: 10px;
+  color: white;
+}
+
+.chat-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-right {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .talk-bubble-left {

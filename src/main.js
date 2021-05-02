@@ -9,8 +9,7 @@ import VueToast from "vue-toast-notification";
 import "vue-toast-notification/dist/theme-sugar.css";
 
 //Socketio
-export const SocketInstance = socketio("https://chatrom-api.herokuapp.com/");
-// export const SocketInstance = socketio("http://localhost:3000");
+export const SocketInstance = socketio(process.env.VUE_APP_WEBSOCKET_URL);
 Vue.use(
   new VueSocketIO({
     connection: SocketInstance,

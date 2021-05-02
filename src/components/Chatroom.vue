@@ -40,6 +40,7 @@
         v-model="message"
         type="text"
         placeholder="Message here..."
+        @keypress.enter="chatMessage"
       />
       <button @click="chatMessage">
         <fa :icon="['fas', 'arrow-up']" size="sm" />
@@ -136,14 +137,14 @@ h1 {
   margin-left: 5px;
 }
 
-.chat-bot{
+.chat-bot {
   margin-top: 5px;
   font-size: 10px;
   display: flex;
   justify-content: center;
 }
 
-.chat-bot p{
+.chat-bot p {
   background-color: #bdbdbd;
   padding: 8px;
   border-radius: 10px;

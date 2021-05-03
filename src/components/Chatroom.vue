@@ -74,8 +74,10 @@ export default {
   },
   methods: {
     chatMessage() {
-      this.$socket.emit("chatMessage", this.message);
-      this.message = "";
+      if (this.message !== "") {
+        this.$socket.emit("chatMessage", this.message);
+        this.message = "";
+      }
     },
     exit() {
       this.$socket.emit("exitRoom");

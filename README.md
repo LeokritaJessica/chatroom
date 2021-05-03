@@ -1,7 +1,7 @@
 # chatroom
 You can testing in here [Chatmyroom](https://chatmyroom.netlify.app/)
-i hope you can enjoy with this app
-if you like this project, please give me love
+i hope you can enjoy with this app\
+if you like this project, please give me love\
 thank you
 
 ## Project setup

@@ -70,6 +70,7 @@ export default {
         el.scrollTop = el.scrollHeight;
         this.$refs.messageBox.focus();
       });
+      // console.log(msg);
     },
   },
   methods: {
